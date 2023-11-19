@@ -4,22 +4,42 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Filtro XP</title>
     <link rel="stylesheet" href="popup.css" />
     <script src="popup.js" defer></script>
   </head>
   <body>
-    <main>
-      <div>
-        <!--<form>
-          <label>Data inicial:</label><br />
-          <input type="text" id="initial-date" placeholder="dd/MM/AAAA" />
-        </form>-->
+    <div class="container">
+      <div class="title-container">
+        <h2>Filtro XP</h2>
+      </div>
+      <div class="form-container">
+        <form>
+          <div class="form-field">
+            <label>Data Inicial <small>(dd/MM/AAAA)</small>:</label><br />
+            <input type="text" id="initial-date" size="16" /><br />
+          </div>
+          <div class="form-field">
+            <label>Data Final <small>(dd/MM/AAAA)</small>:</label><br />
+            <input type="text" id="final-date" size="16" /><br />
+          </div>
+          <div class="form-field">
+            <label>Valor a Investir:</label><br />
+            <label>R$ </label
+            ><input type="text" id="invest-amount" size="13" /><br />
+          </div>
+        </form>
+      </div>
+      <div class="btn-container">
         <button id="run-btn">Executar</button>
       </div>
-      <!--<div>
-        <button id="inject-function">Inject function</button>
-      </div>-->
-    </main>
+      <div class="small-container">
+        <small
+          >Para mais informações da execução, ver o '<b>Console</b>' em 'Mais
+          ferramentas' > 'Ferramentas do programador' ou
+          <b>Ctrl + Shift + I</b>.</small
+        >
+      </div>
+    </div>
   </body>
 </html>

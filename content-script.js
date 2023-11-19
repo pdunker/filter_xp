@@ -1,3 +1,4 @@
+/*
 function run() {
   const init_date_str = "01/01/2026"
   const final_date_str = "14/11/2029"
@@ -137,3 +138,4 @@ function dateToTime(d) {
   return hours + ":" + minutes + ":" + seconds;
 }
 
+*/

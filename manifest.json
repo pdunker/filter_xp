@@ -1,8 +1,8 @@
 {
-  "name": "Filtro Renda Fixa XP",
+  "name": "Filter-XP",
   "version": "0.1",
   "manifest_version": 3,
-  "permissions": ["scripting", "activeTab"],
+  "permissions": ["scripting", "activeTab", "storage"],
   "action": {
     "default_popup": "popup.html"
   }
