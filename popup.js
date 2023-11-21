@@ -27,13 +27,16 @@ runBtn.addEventListener('click', async () => {
 
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    func: run,
+    func: RunFilter,
     args: [initialDate.value, finalDate.value, investAmout.value]
   });
 });
 
-function run(init_date_str, final_date_str, invest_amount) {
+function RunFilter(init_date_str, final_date_str, invest_amount) {
   console.log(`### [${dateToTime(new Date())}] Filter-XP: Script iniciado:`)
+
+  const cdi = 12.15
+  const ipca = 4.82
 
   chrome.storage.local.set({ 'init_date': init_date_str });
   chrome.storage.local.set({ 'final_date': final_date_str });
@@ -91,7 +94,7 @@ function run(init_date_str, final_date_str, invest_amount) {
   console.log(`Total de linhas na página: ${rows.length-1}`)
   
   let debug_row
-  const due_date_possible_cols = [8, 9, 10]
+  const due_date_possible_cols = [7, 8, 9, 10]
   for (var r=1; r < rows.length; r++) { // row[0] is the table header
     var row = rows[r]
     
@@ -117,15 +120,18 @@ function run(init_date_str, final_date_str, invest_amount) {
     }
     
     let due_date_str
+    let rentabil_str
     let min_apl_str
     let qtd_disp_str
     const row_divs = row.getElementsByTagName('div')
     for (var p=0; p<due_date_possible_cols.length; p++) {
       var due_date_col = due_date_possible_cols[p]
+      var rentabil_col = due_date_col + 1
       var min_apli_col = due_date_col + 7
       var qnt_avai_col = min_apli_col + 1
 
       due_date_str = row_divs[due_date_col].innerText
+      rentabil_str = row_divs[rentabil_col].innerText
       min_apl_str = row_divs[min_apli_col].innerText
       qtd_disp_str = row_divs[qnt_avai_col].innerText
 
@@ -140,6 +146,7 @@ function run(init_date_str, final_date_str, invest_amount) {
         console.log("min_apl_str", min_apl_str)
         console.log("is_min_apl_valid", is_min_apl_valid)
         console.log("qtd_disp_str", qtd_disp_str)
+        console.log("--------------------------")
       }
 
       if (is_date_valid && is_min_apl_valid && qtd_disp_str != "")
@@ -171,7 +178,7 @@ function run(init_date_str, final_date_str, invest_amount) {
       console.log("min_apl", min_apl)
     }
     if (min_apl > invest_amount) {
-      console.log(`${r}ª linha descartada: aplicação mínima (R$${min_apl}) > valor a investir (R$${invest_amount})`)
+      console.log(`${r}ª linha descartada: aplicação mínima (R$${min_apl.toFixed(2)}) > valor a investir (R$${invest_amount})`)
       SetRowNotBuyable()
       continue
     }
@@ -183,7 +190,7 @@ function run(init_date_str, final_date_str, invest_amount) {
       if (qtd_disp > 0) {
         var asset_max_amout_to_buy = min_apl*qtd_disp
         if (invest_amount > asset_max_amout_to_buy) {
-          console.log(`${r}ª linha descartada: minimo a investir (R$${invest_amount}) > qtd * preço (R$${asset_max_amout_to_buy})`)
+          console.log(`${r}ª linha descartada: minimo a investir (R$${invest_amount}) > qtd * preço (R$${asset_max_amout_to_buy.toFixed(2)})`)
           SetRowNotBuyable()
           continue
         }
@@ -195,7 +202,8 @@ function run(init_date_str, final_date_str, invest_amount) {
       console.log(r + "ª linha não foi lida corretamente, ver manualmente [2] | Ativo: " + title)
     }
     else {
-      console.log(r + "ª linha válida! Qtd a se comprar: " + qtd_to_buy + " | Ativo: " + title)
+      let rentab_equiv_pre = parseRentability(rentabil_str)
+      console.log(r + "ª linha válida! " + rentab_equiv_pre + "Qtd: " + qtd_to_buy + " | Ativo: " + title)
       SetRowBuyable()
     }
   } // for (var r=1; r < rows.length; r++)
@@ -240,6 +248,46 @@ function run(init_date_str, final_date_str, invest_amount) {
     minutes = format_two_digits(d.getMinutes());
     seconds = format_two_digits(d.getSeconds());
     return hours + ":" + minutes + ":" + seconds;
+  }
+
+  function parseRentability(rentabil_str) {
+    if (!rentabil_str || rentabil_str === "") 
+      return ""
+
+    const perc_cdi = rentabil_str.search("% CDI")
+    if (perc_cdi) {
+      let aux = rentabil_str.substring(0, perc_cdi)
+      let rentab_num = parseNumber(aux)
+      if (rentab_num) {
+        rentab_num = (rentab_num/100)*cdi
+        return "Rent. equiv.: " + rentab_num.toFixed(2).toString() + "% | "
+      }
+    }
+
+    const is_ipca = rentabil_str.startsWith("IPC-A +")
+    if (is_ipca) {
+      let aux = rentabil_str.substring(7, rentabil_str.length-2)
+      if (aux) {
+        let rentab_num = parseNumber(aux)
+        if (rentab_num) {
+          rentab_num = rentab_num + ipca
+          return "Rent. equiv.: " + rentab_num.toFixed(2).toString() + "% | "
+        }
+      }
+    }
+
+    const is_cdi_plus = rentabil_str.startsWith("CDI +")
+    if (is_cdi_plus) {
+      let aux = rentabil_str.substring(5, rentabil_str.length-2)
+      if (aux) {
+        let rentab_num = parseNumber(aux)
+        if (rentab_num) {
+          rentab_num = rentab_num + cdi
+          return "Rent. equiv.: " + rentab_num.toFixed(2).toString() + "% | "
+        }
+      }
+    }
+    return "Rent.: " + rentabil_str + " | "
   }
 }
 
