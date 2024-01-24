@@ -16,4 +16,6 @@ Para utilizar:
  6) Definir um valor mínimo que se deseja investir (para excluir ativos com pouca quantidade)
  7) Executar o filtro
     os ativos carregados serão marcados de verde se estiverem enquadrados ou vermelho se não estiverem.
+    Para mais informações sobre os ativos, ver o console; nele é exibido o rendimento real de cada ativo enquadrado, caso seja pós-fixado
+    (necessário atualizar o CDI e o IPCA atuais no arquivo javascript)
  
