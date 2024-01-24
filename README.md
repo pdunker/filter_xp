@@ -5,9 +5,9 @@ Para instalar:
  2) Habilitar 'Modo do desenvolvedor'
  3) Clicar em 'Carregar sem compactação'
  4) Selecionar a pasta onde estão os arquivos
+ 5) Fixar o ícone da extensão no chrome
 
 Para utilizar:
- 0) Fixar o ícone da extensão no chrome
  1) Ir no site da XP e logar
  2) Ir em renda fixa
  3) Opcionalmente escolher um tipo de rendimento (CDI, Pre ou IPCA)
