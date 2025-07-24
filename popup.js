@@ -35,8 +35,8 @@ runBtn.addEventListener('click', async () => {
 function RunFilter(init_date_str, final_date_str, invest_amount) {
   console.log(`### [${dateToTime(new Date())}] Filter-XP: Script iniciado:`)
 
-  const cdi = 12.15
-  const ipca = 4.82
+  const cdi = 12.35
+  const ipca = 5.35
 
   chrome.storage.local.set({ 'init_date': init_date_str });
   chrome.storage.local.set({ 'final_date': final_date_str });
